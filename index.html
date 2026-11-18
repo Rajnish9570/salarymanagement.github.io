@@ -4,972 +4,889 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PennyBloom | My Money Diary</title>
+<title>PennyBloom - Personal Money Diary</title>
+
 <style>
-:root{
-  --green:#39856b;
-  --light:#e5f3eb;
-  --bg:#f7f8f3;
-  --text:#26372e;
-  --muted:#89958c;
+:root {
+  --green:#168b65;
+  --light:#eaf8f1;
+  --dark:#183c30;
+  --bg:#f5f8f6;
   --white:#fff;
-  --orange:#fff0e7;
-  --pink:#fceaf0;
-  --yellow:#fff6d9;
-  --border:#edf0eb;
+  --red:#e45d67;
+  --yellow:#f5b942;
+  --blue:#5489df;
+  --muted:#78877f;
+  --shadow:0 5px 25px rgba(20,70,50,.07);
 }
-*{box-sizing:border-box}
+*{box-sizing:border-box;margin:0;padding:0}
 body{
- margin:0;
- background:var(--bg);
- color:var(--text);
- font-family:Arial,sans-serif;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--dark);
 }
-button,input,select{font:inherit}
-button{cursor:pointer;border:0}
-.app{max-width:1200px;margin:auto;padding:22px}
-header{
- display:flex;justify-content:space-between;
- align-items:center;margin-bottom:25px;
-}
-.brand{display:flex;align-items:center;gap:12px}
-.logo{
- width:46px;height:46px;border-radius:15px;
- background:var(--light);display:grid;
- place-items:center;font-size:25px;
-}
-.brand h2{margin:0;font-size:21px}
-.brand p{margin:4px 0;color:var(--muted);font-size:12px}
-.profile{
- background:white;padding:10px 14px;
- border-radius:13px;border:1px solid var(--border);
-}
-.profile input{
- border:0;outline:0;width:115px;font-weight:bold;
-}
-.layout{display:grid;grid-template-columns:210px 1fr;gap:20px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
 .sidebar{
- background:white;border:1px solid var(--border);
- padding:14px;border-radius:18px;height:max-content;
+  width:245px;background:#fff;padding:25px 17px;
+  border-right:1px solid #e8eee9;position:fixed;
+  height:100vh;left:0;top:0;z-index:5;
 }
-.nav{
- display:block;width:100%;text-align:left;
- background:transparent;padding:13px;
- border-radius:11px;color:#69766e;
- margin-bottom:5px;font-weight:bold;
+.logo{font-size:23px;font-weight:800;color:var(--green);margin:5px 8px 8px}
+.logo small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:5px}
+.nav-title{font-size:11px;color:#9aa69f;margin:28px 10px 10px;letter-spacing:1px}
+.nav-btn{
+  width:100%;border:0;background:transparent;padding:13px 12px;
+  text-align:left;border-radius:10px;color:#63746b;margin:3px 0;
+  font-size:14px;display:flex;gap:12px;align-items:center;
 }
-.nav.active,.nav:hover{background:var(--light);color:var(--green)}
-.nav span{margin-right:9px}
-.content{min-width:0}
+.nav-btn:hover,.nav-btn.active{background:var(--light);color:var(--green);font-weight:700}
+.main{margin-left:245px;width:calc(100% - 245px);padding:30px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:27px;gap:15px}
+.topbar h1{font-size:25px}
+.topbar p{font-size:13px;color:var(--muted);margin-top:5px}
+.month-select{padding:11px;border:1px solid #dce8df;border-radius:10px;background:#fff}
 .page{display:none}
 .page.active{display:block}
-.heading{
- display:flex;justify-content:space-between;
- align-items:center;gap:12px;margin-bottom:18px;
+.cards{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:15px;margin-bottom:22px
 }
-.heading h1{font-size:25px;margin:0}
-.heading p{color:var(--muted);font-size:13px}
-.month{
- padding:10px;border:1px solid var(--border);
- border-radius:11px;background:white;
+.card,.panel{
+  background:#fff;border-radius:16px;padding:20px;
+  box-shadow:var(--shadow);border:1px solid #edf1ed;
 }
-.stats{
- display:grid;grid-template-columns:repeat(4,1fr);
- gap:12px;margin-bottom:16px;
+.card .label{font-size:13px;color:var(--muted);margin-bottom:12px}
+.card .amount{font-size:25px;font-weight:800;word-break:break-word}
+.card .icon{font-size:22px;margin-bottom:13px}
+.green{color:var(--green)}
+.red{color:var(--red)}
+.blue{color:var(--blue)}
+.yellow{color:#d79a20}
+.section-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:20px}
+.panel h3{font-size:17px;margin-bottom:18px}
+.panel-sub{font-size:12px;color:var(--muted);margin-top:-12px;margin-bottom:17px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field{margin-bottom:13px}
+.field.full{grid-column:1/-1}
+label{display:block;font-size:12px;color:#65766c;margin-bottom:7px;font-weight:600}
+input,select,textarea{
+  width:100%;padding:12px;border:1px solid #dfe8e1;
+  border-radius:9px;outline:none;background:#fff;color:var(--dark)
 }
-.stat,.panel,.hero{
- background:white;border:1px solid var(--border);
- border-radius:18px;padding:17px;
-}
-.stat small{color:var(--muted);font-size:12px}
-.stat h2{font-size:23px;margin:13px 0 5px}
-.stat .emoji{font-size:23px;float:right}
-.hero{
- background:linear-gradient(110deg,#e3f3e9,#f5f8e9);
- display:flex;justify-content:space-between;
- align-items:center;margin-bottom:16px;
-}
-.hero h3{margin:0 0 8px}
-.hero p{color:#6d8a76;font-size:13px}
-.hero strong{font-size:25px;color:var(--green)}
-.hero .plant{font-size:45px}
-.columns{
- display:grid;grid-template-columns:1.2fr 1fr;
- gap:15px;margin-bottom:16px;
-}
-.panel{margin-bottom:15px}
-.panel h3{margin:0 0 15px;font-size:16px}
+input:focus,select:focus,textarea:focus{border-color:var(--green)}
+textarea{resize:vertical;min-height:70px}
 .btn{
- padding:11px 15px;border-radius:11px;
- background:var(--green);color:white;font-weight:bold;
+  border:0;padding:12px 17px;border-radius:9px;
+  background:var(--green);color:white;font-weight:700;
 }
-.btn.light{background:var(--light);color:var(--green)}
-.btn.danger{background:#fff0ed;color:#b65b4c}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px}
-.records{display:grid;gap:9px}
-.record{
- display:flex;align-items:center;gap:10px;
- padding:12px;border:1px solid var(--border);
- border-radius:13px;background:white;
+.btn:hover{opacity:.9}
+.btn.secondary{background:#eaf3ee;color:var(--green)}
+.btn.danger{background:#fff0f0;color:var(--red)}
+.btn.small{padding:7px 10px;font-size:12px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid #edf1ed;font-size:13px}
+th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.type-tag{padding:5px 9px;border-radius:20px;font-size:11px;background:#eaf8f1;color:var(--green)}
+.type-tag.expense{background:#fff0f0;color:var(--red)}
+.type-tag.saving{background:#edf3ff;color:var(--blue)}
+.empty{text-align:center;padding:25px;color:var(--muted);font-size:13px}
+.progress{height:9px;background:#edf1ed;border-radius:20px;overflow:hidden;margin:10px 0}
+.progress div{height:100%;background:var(--green);border-radius:20px}
+.summary-line{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid #edf1ed;font-size:13px}
+.summary-line:last-child{border:0}
+.positive{color:var(--green);font-weight:700}
+.negative{color:var(--red);font-weight:700}
+.notice{padding:12px;background:#fff8e8;color:#916b20;border-radius:9px;font-size:12px;margin-bottom:17px;line-height:1.5}
+.profile-input{max-width:400px}
+.mobile-menu{display:none}
+@media(max-width:1000px){
+ .cards{grid-template-columns:repeat(2,1fr)}
 }
-.record-icon{
- width:39px;height:39px;border-radius:12px;
- background:var(--light);display:grid;
- place-items:center;font-size:19px;
-}
-.record-info{flex:1;min-width:0}
-.record-info b{font-size:13px}
-.record-info small{display:block;color:var(--muted);margin-top:5px;font-size:11px}
-.amount{font-size:13px;font-weight:bold;white-space:nowrap}
-.plus{color:var(--green)}
-.minus{color:#d17b57}
-.record button{
- background:#f3f5f1;padding:7px 9px;
- border-radius:8px;color:#69766e;
-}
-.empty{text-align:center;color:var(--muted);padding:25px;font-size:13px}
-.chart{
- display:flex;align-items:end;gap:12px;
- height:170px;border-bottom:1px solid var(--border);
- padding-top:10px;
-}
-.bar-group{
- flex:1;height:100%;display:flex;
- align-items:end;justify-content:center;gap:3px;
- position:relative;
-}
-.bar{width:14px;background:#8fc8a8;border-radius:6px 6px 0 0}
-.bar.exp{background:#f3b18f}
-.bar-group small{
- position:absolute;bottom:-20px;color:var(--muted);
- font-size:10px;
-}
-.chart-legend{margin-top:28px;font-size:11px;color:var(--muted)}
-.donut-area{display:flex;align-items:center;gap:15px}
-.donut{
- width:125px;height:125px;border-radius:50%;
- background:#e5f3eb;flex-shrink:0;
- display:grid;place-items:center;
-}
-.donut-inner{
- width:77px;height:77px;border-radius:50%;
- background:white;display:grid;place-items:center;
- text-align:center;font-size:11px;color:var(--muted);
-}
-.donut-inner b{color:var(--text);font-size:15px}
-.legend{font-size:11px;display:grid;gap:10px}
-.legend span{display:flex;justify-content:space-between;gap:10px}
-.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}
-.goal{
- padding:15px;border:1px solid var(--border);
- border-radius:13px;margin-bottom:10px;
-}
-.progress{height:8px;background:#edf1eb;border-radius:10px;margin:12px 0}
-.progress span{height:100%;display:block;background:#70b58c;border-radius:10px}
-.goal small{color:var(--muted)}
-.modal-bg{
- display:none;position:fixed;inset:0;
- background:#17291e99;z-index:10;
- justify-content:center;align-items:center;padding:15px;
-}
-.modal-bg.show{display:flex}
-.modal{
- background:white;padding:22px;border-radius:20px;
- width:100%;max-width:460px;max-height:90vh;overflow:auto;
-}
-.modal-head{display:flex;justify-content:space-between}
-.modal-head h2{font-size:19px;margin:0}
-.close{background:#f0f3ef;border-radius:9px;padding:8px}
-.field{margin:13px 0}
-.field label{display:block;font-size:12px;font-weight:bold;margin-bottom:7px}
-.field input,.field select{
- width:100%;padding:11px;border:1px solid var(--border);
- border-radius:10px;outline:none;background:#fcfdfb;
-}
-.field input:focus,.field select:focus{border-color:var(--green)}
-.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.form-actions{display:flex;justify-content:end;gap:9px;margin-top:18px}
-.toast{
- position:fixed;bottom:20px;left:50%;
- transform:translateX(-50%);background:#26372e;
- color:white;padding:12px 18px;border-radius:12px;
- display:none;font-size:13px;z-index:20;
-}
-.footer{text-align:center;color:#a2aaa3;font-size:11px;padding:20px}
-@media(max-width:850px){
- .layout{grid-template-columns:1fr}
- .sidebar{display:flex;overflow:auto;padding:7px}
- .nav{white-space:nowrap;width:auto;margin:0}
- .stats{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:600px){
- .app{padding:13px}
- .brand h2{font-size:18px}
- .profile input{width:85px}
- .columns{grid-template-columns:1fr}
- .heading{align-items:flex-start;flex-direction:column}
- .heading h1{font-size:22px}
- .stat{padding:13px}
- .stat h2{font-size:19px}
- .hero{padding:15px}
- .hero .plant{font-size:35px}
- .record{gap:7px;padding:9px}
- .record button{padding:7px}
- .nav{font-size:11px;padding:11px 9px}
- .two{grid-template-columns:1fr 1fr}
+@media(max-width:700px){
+ .sidebar{width:250px;transform:translateX(-100%);transition:.25s}
+ .sidebar.open{transform:translateX(0)}
+ .main{margin:0;width:100%;padding:17px}
+ .mobile-menu{display:block;border:0;background:white;padding:10px;border-radius:9px;font-size:20px}
+ .topbar{align-items:flex-start}
+ .topbar h1{font-size:20px}
+ .section-grid{grid-template-columns:1fr}
+ .cards{gap:10px}
+ .card{padding:14px}
+ .card .amount{font-size:20px}
+ .card .label{font-size:11px}
+ .form-grid{grid-template-columns:1fr}
+ .field.full{grid-column:auto}
 }
 </style>
 </head>
-<body>
 
+<body>
 <div class="app">
 
-<header>
- <div class="brand">
-  <div class="logo">🌱</div>
-  <div>
-   <h2>PennyBloom</h2>
-   <p>Your personal money diary</p>
+<aside class="sidebar" id="sidebar">
+  <div class="logo">🌱 PennyBloom
+    <small>Your personal money diary</small>
   </div>
- </div>
- <div class="profile">
-  😊 <input id="profileName" value="My Money Diary">
- </div>
-</header>
 
-<div class="layout">
+  <div class="nav-title">MENU</div>
+  <button class="nav-btn active" data-page="dashboard">🏠 Dashboard</button>
+  <button class="nav-btn" data-page="salary">💰 Salary Records</button>
+  <button class="nav-btn" data-page="expenses">💸 Expenses</button>
+  <button class="nav-btn" data-page="savings">🐷 Savings</button>
+  <button class="nav-btn" data-page="reports">📊 Monthly Reports</button>
 
-<aside class="sidebar">
- <button class="nav active" data-page="dashboard">🏠 Overview</button>
- <button class="nav" data-page="salary">💰 Salary</button>
- <button class="nav" data-page="expenses">🛍️ Expenses</button>
- <button class="nav" data-page="savings">🌷 Savings</button>
- <button class="nav" data-page="reports">📊 Reports</button>
+  <div class="nav-title">MORE</div>
+  <button class="nav-btn" data-page="settings">⚙️ Settings & Backup</button>
 </aside>
 
-<main class="content">
+<main class="main">
+<header class="topbar">
+  <div style="display:flex;gap:12px;align-items:center">
+    <button class="mobile-menu" id="menuBtn">☰</button>
+    <div>
+      <h1 id="pageTitle">Dashboard</h1>
+      <p id="todayText">Manage your money smartly 🌿</p>
+    </div>
+  </div>
+  <input type="month" id="globalMonth" class="month-select">
+</header>
 
 <!-- DASHBOARD -->
-<section id="dashboard" class="page active">
-
- <div class="heading">
-  <div>
-   <h1>Hello, money saver! ✨</h1>
-   <p>Let's see how your money is doing.</p>
-  </div>
-  <input type="month" class="month" id="monthFilter">
- </div>
-
- <div class="stats">
-  <div class="stat">
-   <span class="emoji">💵</span>
-   <small>Salary received</small>
-   <h2 id="salaryTotal">₹0</h2>
-  </div>
-  <div class="stat">
-   <span class="emoji">🛍️</span>
-   <small>Total expenses</small>
-   <h2 id="expenseTotal">₹0</h2>
-  </div>
-  <div class="stat">
-   <span class="emoji">🌸</span>
-   <small>Your savings</small>
-   <h2 id="savingTotal">₹0</h2>
-  </div>
-  <div class="stat">
-   <span class="emoji">👛</span>
-   <small>Available balance</small>
-   <h2 id="balanceTotal">₹0</h2>
-  </div>
- </div>
-
- <div class="hero">
-  <div>
-   <h3>Little savings, big dreams 🌿</h3>
-   <p>Every rupee saved brings you closer to your goals.</p>
-   <strong id="heroSaving">₹0 saved</strong>
-  </div>
-  <div class="plant">🪴</div>
- </div>
-
- <div class="columns">
-  <div class="panel">
-   <h3>📈 Income vs Expenses</h3>
-   <div class="chart" id="chart"></div>
-   <div class="chart-legend">
-    🟢 Income &nbsp;&nbsp; 🟠 Expenses
-   </div>
-  </div>
-
-  <div class="panel">
-   <h3>🍃 Where does your money go?</h3>
-   <div class="donut-area">
-    <div class="donut" id="donut">
-     <div class="donut-inner">
-      <div><b id="donutAmount">₹0</b><br>Spent</div>
-     </div>
+<section class="page active" id="dashboard">
+  <div class="cards">
+    <div class="card">
+      <div class="icon">💰</div>
+      <div class="label">Monthly Salary</div>
+      <div class="amount green" id="dSalary">₹0</div>
     </div>
-    <div class="legend" id="legend"></div>
-   </div>
+    <div class="card">
+      <div class="icon">💸</div>
+      <div class="label">Total Expenses</div>
+      <div class="amount red" id="dExpense">₹0</div>
+    </div>
+    <div class="card">
+      <div class="icon">🐷</div>
+      <div class="label">Total Savings</div>
+      <div class="amount blue" id="dSavings">₹0</div>
+    </div>
+    <div class="card">
+      <div class="icon">💚</div>
+      <div class="label">Remaining Balance</div>
+      <div class="amount green" id="dBalance">₹0</div>
+    </div>
   </div>
- </div>
 
- <div class="panel">
-  <h3>🕒 Recent activity</h3>
-  <div id="recent" class="records"></div>
- </div>
+  <div class="section-grid">
+    <div class="panel">
+      <h3>📅 Monthly Summary</h3>
+      <p class="panel-sub" id="summaryMonth"></p>
+      <div class="summary-line"><span>Salary received</span><b id="sSalary">₹0</b></div>
+      <div class="summary-line"><span>Money spent</span><b class="red" id="sExpense">₹0</b></div>
+      <div class="summary-line"><span>Money saved</span><b class="blue" id="sSavings">₹0</b></div>
+      <div class="summary-line"><strong>Remaining amount</strong><strong class="positive" id="sBalance">₹0</strong></div>
+    </div>
 
+    <div class="panel">
+      <h3>💡 Money Distribution</h3>
+      <p class="panel-sub">How your monthly salary is used</p>
+      <div class="summary-line"><span>Expenses</span><b id="expensePercent">0%</b></div>
+      <div class="progress"><div id="expenseBar" style="width:0%"></div></div>
+      <div class="summary-line"><span>Savings</span><b id="savingPercent">0%</b></div>
+      <div class="progress"><div id="savingBar" style="width:0%;background:#5489df"></div></div>
+      <div class="summary-line"><span>Remaining</span><b id="balancePercent">0%</b></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>🕒 Recent Transactions</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Details</th><th>Type</th><th>Amount</th></tr></thead>
+        <tbody id="recentTable"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <!-- SALARY -->
-<section id="salary" class="page">
- <div class="heading">
-  <div>
-   <h1>My Salary 💰</h1>
-   <p>Keep a record of every payday.</p>
+<section class="page" id="salary">
+  <div class="section-grid">
+    <div class="panel">
+      <h3>💰 Add Monthly Salary</h3>
+      <form id="salaryForm">
+        <div class="field">
+          <label>Salary Month</label>
+          <input type="month" id="salaryMonth" required>
+        </div>
+        <div class="field">
+          <label>Salary Amount (₹)</label>
+          <input type="number" id="salaryAmount" min="0.01" step="0.01" placeholder="Enter salary amount" required>
+        </div>
+        <div class="field">
+          <label>Received Date</label>
+          <input type="date" id="salaryDate" required>
+        </div>
+        <div class="field">
+          <label>Payment Method</label>
+          <select id="salaryMethod">
+            <option>Bank Transfer</option>
+            <option>UPI</option>
+            <option>Cash</option>
+            <option>Cheque</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Company / Source</label>
+          <input id="salarySource" placeholder="Optional">
+        </div>
+        <button class="btn" type="submit">＋ Save Salary</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>📌 Salary Information</h3>
+      <div class="notice">You can save one salary record per month. Saving another salary for the same month will update the existing record.</div>
+      <div class="summary-line"><span>Selected month</span><b id="salaryInfoMonth">-</b></div>
+      <div class="summary-line"><span>Salary amount</span><b id="salaryInfoAmount">₹0</b></div>
+      <div class="summary-line"><span>Received date</span><b id="salaryInfoDate">-</b></div>
+      <div class="summary-line"><span>Payment method</span><b id="salaryInfoMethod">-</b></div>
+    </div>
   </div>
- </div>
- <div class="actions">
-  <button class="btn" onclick="openModal('salary')">＋ Add Salary</button>
-  <button class="btn light" onclick="openModal('pending')">＋ Pending Salary</button>
- </div>
- <div class="panel">
-  <h3>📅 Salary History</h3>
-  <div id="salaryRecords" class="records"></div>
- </div>
- <div class="panel">
-  <h3>⏳ Pending Salary Months</h3>
-  <div id="pendingRecords" class="records"></div>
- </div>
+
+  <div class="panel">
+    <h3>All Salary Records</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Month</th><th>Amount</th><th>Received Date</th><th>Method</th><th>Source</th><th>Action</th></tr></thead>
+        <tbody id="salaryTable"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <!-- EXPENSES -->
-<section id="expenses" class="page">
- <div class="heading">
-  <div>
-   <h1>My Expenses 🛍️</h1>
-   <p>Track every rupee you spend.</p>
+<section class="page" id="expenses">
+  <div class="section-grid">
+    <div class="panel">
+      <h3>💸 Add New Expense</h3>
+      <form id="expenseForm">
+        <div class="field">
+          <label>Expense Title</label>
+          <input id="expenseTitle" placeholder="e.g. Shopping, Food, Rent" required>
+        </div>
+        <div class="field">
+          <label>Expense Amount (₹)</label>
+          <input id="expenseAmount" type="number" min="0.01" step="0.01" placeholder="Enter amount" required>
+        </div>
+        <div class="field">
+          <label>Expense Date</label>
+          <input id="expenseDate" type="date" required>
+        </div>
+        <div class="field">
+          <label>Salary Month</label>
+          <input id="expenseMonth" type="month" required>
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select id="expenseCategory">
+            <option>Food</option><option>Shopping</option><option>Rent</option>
+            <option>Travel</option><option>Bills</option><option>Health</option>
+            <option>Education</option><option>Entertainment</option>
+            <option>Family</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Payment Method</label>
+          <select id="expenseMethod">
+            <option>UPI</option><option>Cash</option><option>Card</option>
+            <option>Bank Transfer</option><option>Other</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Notes (Optional)</label>
+          <textarea id="expenseNote" placeholder="Write something..."></textarea>
+        </div>
+        <button class="btn" type="submit">＋ Add Expense</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>📉 Selected Month Expenses</h3>
+      <p class="panel-sub">Expenses linked to the selected salary month</p>
+      <div class="icon">💸</div>
+      <div class="amount red" id="expenseMonthTotal" style="font-size:28px">₹0</div>
+      <div class="summary-line"><span>Total transactions</span><b id="expenseCount">0</b></div>
+    </div>
   </div>
- </div>
- <button class="btn" onclick="openModal('expense')">＋ Add Expense</button>
- <div class="panel" style="margin-top:15px">
-  <h3>🧾 Expense History</h3>
-  <select id="expenseFilter" class="month" style="margin-bottom:12px">
-   <option value="all">All expenses</option>
-   <option value="month">This month</option>
-  </select>
-  <div id="expenseRecords" class="records"></div>
- </div>
+
+  <div class="panel">
+    <h3>All Expense Records</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Title</th><th>Category</th><th>Month</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody id="expenseTable"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 <!-- SAVINGS -->
-<section id="savings" class="page">
- <div class="heading">
-  <div>
-   <h1>My Savings 🌷</h1>
-   <p>Save today, smile tomorrow.</p>
+<section class="page" id="savings">
+  <div class="section-grid">
+    <div class="panel">
+      <h3>🐷 Add Monthly Savings</h3>
+      <form id="savingForm">
+        <div class="field">
+          <label>Saving Purpose</label>
+          <input id="savingTitle" placeholder="e.g. Emergency Fund, Future" required>
+        </div>
+        <div class="field">
+          <label>Saving Amount (₹)</label>
+          <input id="savingAmount" type="number" min="0.01" step="0.01" placeholder="Enter amount" required>
+        </div>
+        <div class="field">
+          <label>Saving Date</label>
+          <input id="savingDate" type="date" required>
+        </div>
+        <div class="field">
+          <label>Salary Month</label>
+          <input id="savingMonth" type="month" required>
+        </div>
+        <div class="field">
+          <label>Saving Type</label>
+          <select id="savingCategory">
+            <option>Bank Savings</option>
+            <option>Emergency Fund</option>
+            <option>Investment</option>
+            <option>Fixed Deposit</option>
+            <option>Personal Savings</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Notes (Optional)</label>
+          <textarea id="savingNote" placeholder="Write something..."></textarea>
+        </div>
+        <button class="btn" type="submit">＋ Add Savings</button>
+      </form>
+    </div>
+
+    <div class="panel">
+      <h3>🌿 Your Monthly Savings</h3>
+      <p class="panel-sub">Your total savings for selected month</p>
+      <div class="icon">🐷</div>
+      <div class="amount blue" id="savingMonthTotal" style="font-size:28px">₹0</div>
+      <div class="summary-line"><span>Total saving entries</span><b id="savingCount">0</b></div>
+      <div class="notice">Savings are recorded separately from expenses. Your remaining balance is calculated after subtracting both from your salary.</div>
+    </div>
   </div>
- </div>
- <div class="stats" style="grid-template-columns:repeat(2,1fr)">
-  <div class="stat">
-   <small>This month's savings</small>
-   <h2 id="monthSaved">₹0</h2>
+
+  <div class="panel">
+    <h3>All Savings Records</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Purpose</th><th>Type</th><th>Month</th><th>Amount</th><th>Action</th></tr></thead>
+        <tbody id="savingTable"></tbody>
+      </table>
+    </div>
   </div>
-  <div class="stat">
-   <small>All-time savings</small>
-   <h2 id="allSaved">₹0</h2>
-  </div>
- </div>
- <button class="btn" onclick="openModal('goal')">＋ Create Savings Goal</button>
- <div class="panel" style="margin-top:15px">
-  <h3>🎯 My Savings Goals</h3>
-  <div id="goalsList"></div>
- </div>
 </section>
 
 <!-- REPORTS -->
-<section id="reports" class="page">
- <div class="heading">
-  <div>
-   <h1>Money Reports 📊</h1>
-   <p>Understand your financial journey.</p>
+<section class="page" id="reports">
+  <div class="panel">
+    <h3>📊 Monthly Financial Report</h3>
+    <p class="panel-sub">Complete breakdown of your selected month</p>
+    <div class="summary-line"><span>Salary</span><b id="rSalary">₹0</b></div>
+    <div class="summary-line"><span>Total expenses</span><b class="red" id="rExpense">₹0</b></div>
+    <div class="summary-line"><span>Total savings</span><b class="blue" id="rSavings">₹0</b></div>
+    <div class="summary-line"><strong>Remaining balance</strong><strong class="positive" id="rBalance">₹0</strong></div>
   </div>
- </div>
- <div class="stats">
-  <div class="stat"><small>All salary</small><h2 id="rIncome">₹0</h2></div>
-  <div class="stat"><small>All expenses</small><h2 id="rExpense">₹0</h2></div>
-  <div class="stat"><small>Net savings</small><h2 id="rSaving">₹0</h2></div>
-  <div class="stat"><small>Salary records</small><h2 id="rCount">0</h2></div>
- </div>
- <div class="panel">
-  <h3>📅 Monthly Summary</h3>
-  <div id="reportRows" class="records"></div>
- </div>
- <div class="panel">
-  <h3>💾 Backup & Data</h3>
-  <p style="font-size:12px;color:var(--muted)">
-   Your records are saved in this browser. Download a backup regularly.
-   Clearing browser data may erase your records.
-  </p>
-  <div class="actions">
-   <button class="btn light" onclick="exportCSV()">Export CSV</button>
-   <button class="btn light" onclick="exportBackup()">Backup JSON</button>
-   <button class="btn danger" onclick="clearData()">Clear Records</button>
+
+  <div class="section-grid" style="margin-top:18px">
+    <div class="panel">
+      <h3>📅 Yearly Overview</h3>
+      <div class="summary-line"><span>Yearly salary</span><b id="yearSalary">₹0</b></div>
+      <div class="summary-line"><span>Yearly expenses</span><b id="yearExpense">₹0</b></div>
+      <div class="summary-line"><span>Yearly savings</span><b id="yearSavings">₹0</b></div>
+      <div class="summary-line"><strong>Yearly remaining</strong><strong class="positive" id="yearBalance">₹0</strong></div>
+    </div>
+    <div class="panel">
+      <h3>💡 Financial Tip</h3>
+      <p style="font-size:13px;line-height:1.8;color:var(--muted)">
+        Track every expense, save a portion of your income, and review your monthly balance regularly. Small savings can make a big difference over time! 🌱
+      </p>
+    </div>
   </div>
-  <label class="btn light" style="display:inline-block">
-   Import JSON Backup
-   <input type="file" accept=".json" onchange="importBackup(event)" hidden>
-  </label>
- </div>
 </section>
 
-<div class="footer">Made with 🌱 and love | PennyBloom</div>
+<!-- SETTINGS -->
+<section class="page" id="settings">
+  <div class="panel" style="margin-bottom:18px">
+    <h3>👤 Personalization</h3>
+    <div class="field profile-input">
+      <label>Your Name / Diary Name</label>
+      <input id="profileName" placeholder="My Money Diary">
+    </div>
+    <button class="btn" id="saveProfile">Save Name</button>
+  </div>
+
+  <div class="panel" style="margin-bottom:18px">
+    <h3>📦 Backup Your Data</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:15px">
+      Download your records as a JSON backup. You can restore the same backup later.
+    </p>
+    <div class="actions">
+      <button class="btn" id="exportBtn">⬇ Download Backup</button>
+      <button class="btn secondary" id="exportCsv">Export CSV</button>
+    </div>
+    <div class="field" style="margin-top:18px;max-width:400px">
+      <label>Restore Backup (JSON)</label>
+      <input type="file" id="importFile" accept=".json,application/json">
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>⚠️ Danger Zone</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:15px">This permanently deletes all records stored in this browser.</p>
+    <button class="btn danger" id="clearBtn">Delete All My Data</button>
+  </div>
+
+  <p style="text-align:center;color:var(--muted);font-size:12px;margin:25px 0">
+    PennyBloom • Your Money, Your Control 🌿
+  </p>
+</section>
 
 </main>
 </div>
-</div>
-
-<!-- MODAL -->
-<div class="modal-bg" id="modalBg">
- <div class="modal">
-  <div class="modal-head">
-   <h2 id="modalTitle">Add Record</h2>
-   <button class="close" onclick="closeModal()">✕</button>
-  </div>
-  <form id="recordForm">
-   <div id="formFields"></div>
-   <div class="form-actions">
-    <button type="button" class="btn light" onclick="closeModal()">Cancel</button>
-    <button type="submit" class="btn">Save Record</button>
-   </div>
-  </form>
- </div>
-</div>
-
-<div class="toast" id="toast"></div>
 
 <script>
-const KEY="pennybloom_v1";
+const STORAGE_KEY = "pennybloom_money_diary_v1";
 
+function currentMonth(){
+  return new Date().toISOString().slice(0,7);
+}
+function today(){
+  return new Date().toISOString().slice(0,10);
+}
 function fresh(){
- return {
-  profile:"My Money Diary",
-  salary:[],
-  expenses:[],
-  pending:[],
-  goals:[]
- };
+  return {
+    profile:"My Money Diary",
+    salary:[],
+    expenses:[],
+    savings:[]
+  };
 }
 
-function load(){
- try{
-  return JSON.parse(localStorage.getItem(KEY)) || fresh();
- }catch(e){return fresh()}
+function loadDB(){
+  try{
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if(!saved) return fresh();
+
+    saved.salary ||= [];
+    saved.expenses ||= [];
+    saved.savings ||= [];
+
+    // Support data from earlier versions of the diary.
+    saved.expenses.forEach(x=>{
+      if(!x.month && x.date) x.month=x.date.slice(0,7);
+    });
+    saved.savings.forEach(x=>{
+      if(!x.month && x.date) x.month=x.date.slice(0,7);
+    });
+
+    return saved;
+  }catch(e){
+    return fresh();
+  }
 }
 
-let db=load();
-let currentType="";
-let editIndex=null;
+let db=loadDB();
+let selectedMonth=currentMonth();
 
-const $=id=>document.getElementById(id);
-const today=()=>new Date().toISOString().slice(0,10);
-const currentMonth=()=>today().slice(0,7);
-
-function save(){
- localStorage.setItem(KEY,JSON.stringify(db));
- render();
+function saveDB(){
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(db));
 }
 
 function money(n){
- return "₹"+Number(n||0).toLocaleString("en-IN",{maximumFractionDigits:2});
+  return new Intl.NumberFormat("en-IN",{
+    style:"currency",currency:"INR",maximumFractionDigits:2
+  }).format(Number(n)||0);
 }
-
-function total(arr){
- return arr.reduce((s,x)=>s+Number(x.amount||0),0);
+function total(items){
+  return items.reduce((sum,x)=>sum+(Number(x.amount)||0),0);
 }
-
+function escapeHTML(value){
+  return String(value??"").replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
 function monthName(m){
- return new Date(m+"-02").toLocaleDateString("en-IN",{
-  month:"long",year:"numeric"
- });
+  if(!m) return "-";
+  const [y,mo]=m.split("-");
+  return new Date(Number(y),Number(mo)-1,1).toLocaleDateString("en-IN",{
+    month:"long",year:"numeric"
+  });
+}
+function monthlySummary(month){
+  const salary=total(db.salary.filter(x=>x.month===month));
+  const expenses=total(db.expenses.filter(x=>x.month===month));
+  const savings=total(db.savings.filter(x=>x.month===month));
+  const remaining=salary-expenses-savings;
+  return {salary,expenses,savings,remaining};
+}
+function setText(id,value){
+  document.getElementById(id).textContent=value;
+}
+function emptyRow(cols,message="No records found yet."){
+  return `<tr><td colspan="${cols}" class="empty">${message}</td></tr>`;
 }
 
-function notify(msg){
- $("toast").textContent=msg;
- $("toast").style.display="block";
- setTimeout(()=>$("toast").style.display="none",2200);
+const globalMonth=document.getElementById("globalMonth");
+globalMonth.value=selectedMonth;
+
+function updateDashboard(){
+  const s=monthlySummary(selectedMonth);
+  setText("dSalary",money(s.salary));
+  setText("dExpense",money(s.expenses));
+  setText("dSavings",money(s.savings));
+  setText("dBalance",money(s.remaining));
+
+  setText("summaryMonth",monthName(selectedMonth));
+  setText("sSalary",money(s.salary));
+  setText("sExpense",money(s.expenses));
+  setText("sSavings",money(s.savings));
+  setText("sBalance",money(s.remaining));
+
+  const base=s.salary>0?s.salary:0;
+  const exp=base?Math.min(100,s.expenses/base*100):0;
+  const sav=base?Math.min(100,s.savings/base*100):0;
+  const bal=base?Math.max(0,Math.min(100,s.remaining/base*100)):0;
+
+  setText("expensePercent",exp.toFixed(1)+"%");
+  setText("savingPercent",sav.toFixed(1)+"%");
+  setText("balancePercent",bal.toFixed(1)+"%");
+  document.getElementById("expenseBar").style.width=exp+"%";
+  document.getElementById("savingBar").style.width=sav+"%";
+
+  // Salary information
+  const sal=db.salary.find(x=>x.month===selectedMonth);
+  setText("salaryInfoMonth",monthName(selectedMonth));
+  setText("salaryInfoAmount",sal?money(sal.amount):"₹0");
+  setText("salaryInfoDate",sal?sal.date:"-");
+  setText("salaryInfoMethod",sal?sal.method:"-");
+
+  // Expense summary
+  const expenses=db.expenses.filter(x=>x.month===selectedMonth);
+  setText("expenseMonthTotal",money(s.expenses));
+  setText("expenseCount",expenses.length);
+
+  // Savings summary
+  const savings=db.savings.filter(x=>x.month===selectedMonth);
+  setText("savingMonthTotal",money(s.savings));
+  setText("savingCount",savings.length);
+
+  renderRecent();
+  renderSalary();
+  renderExpenses();
+  renderSavings();
+  updateReports();
 }
 
-function showPage(page){
- document.querySelectorAll(".page").forEach(x=>{
-  x.classList.toggle("active",x.id===page);
- });
- document.querySelectorAll(".nav").forEach(x=>{
-  x.classList.toggle("active",x.dataset.page===page);
- });
+function renderRecent(){
+  const all=[
+    ...db.salary.map(x=>({...x,type:"Salary",title:"Monthly Salary"})),
+    ...db.expenses.map(x=>({...x,type:"Expense"})),
+    ...db.savings.map(x=>({...x,type:"Saving"}))
+  ].filter(x=>x.month===selectedMonth)
+   .sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+
+  const html=all.slice(0,8).map(x=>{
+    const tag=x.type==="Expense"?"expense":x.type==="Saving"?"saving":"";
+    return `<tr>
+      <td>${escapeHTML(x.date||"-")}</td>
+      <td>${escapeHTML(x.title||x.source||"Salary")}</td>
+      <td><span class="type-tag ${tag}">${x.type}</span></td>
+      <td><b>${money(x.amount)}</b></td>
+    </tr>`;
+  }).join("");
+
+  document.getElementById("recentTable").innerHTML=
+    html||emptyRow(4);
 }
 
-document.querySelectorAll(".nav").forEach(b=>{
- b.onclick=()=>showPage(b.dataset.page);
+function renderSalary(){
+  const rows=[...db.salary].sort((a,b)=>b.month.localeCompare(a.month));
+  document.getElementById("salaryTable").innerHTML=rows.map(x=>`
+    <tr>
+      <td>${escapeHTML(monthName(x.month))}</td>
+      <td><b>${money(x.amount)}</b></td>
+      <td>${escapeHTML(x.date)}</td>
+      <td>${escapeHTML(x.method)}</td>
+      <td>${escapeHTML(x.source||"-")}</td>
+      <td><button class="btn danger small" onclick="deleteRecord('salary','${x.id}')">Delete</button></td>
+    </tr>
+  `).join("")||emptyRow(6);
+}
+
+function renderExpenses(){
+  const rows=[...db.expenses].sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById("expenseTable").innerHTML=rows.map(x=>`
+    <tr>
+      <td>${escapeHTML(x.date)}</td>
+      <td>${escapeHTML(x.title)}</td>
+      <td>${escapeHTML(x.category)}</td>
+      <td>${escapeHTML(monthName(x.month))}</td>
+      <td><b class="red">${money(x.amount)}</b></td>
+      <td><button class="btn danger small" onclick="deleteRecord('expenses','${x.id}')">Delete</button></td>
+    </tr>
+  `).join("")||emptyRow(6);
+}
+
+function renderSavings(){
+  const rows=[...db.savings].sort((a,b)=>b.date.localeCompare(a.date));
+  document.getElementById("savingTable").innerHTML=rows.map(x=>`
+    <tr>
+      <td>${escapeHTML(x.date)}</td>
+      <td>${escapeHTML(x.title)}</td>
+      <td>${escapeHTML(x.category)}</td>
+      <td>${escapeHTML(monthName(x.month))}</td>
+      <td><b class="blue">${money(x.amount)}</b></td>
+      <td><button class="btn danger small" onclick="deleteRecord('savings','${x.id}')">Delete</button></td>
+    </tr>
+  `).join("")||emptyRow(6);
+}
+
+function updateReports(){
+  const s=monthlySummary(selectedMonth);
+  setText("rSalary",money(s.salary));
+  setText("rExpense",money(s.expenses));
+  setText("rSavings",money(s.savings));
+  setText("rBalance",money(s.remaining));
+
+  const year=selectedMonth.slice(0,4);
+  const salaries=db.salary.filter(x=>x.month.startsWith(year));
+  const expenses=db.expenses.filter(x=>x.month.startsWith(year));
+  const savings=db.savings.filter(x=>x.month.startsWith(year));
+
+  const ys=total(salaries),ye=total(expenses),yv=total(savings);
+  setText("yearSalary",money(ys));
+  setText("yearExpense",money(ye));
+  setText("yearSavings",money(yv));
+  setText("yearBalance",money(ys-ye-yv));
+}
+
+// Navigation
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById(btn.dataset.page).classList.add("active");
+    setText("pageTitle",btn.textContent.trim().replace(/^[^\w]+/,""));
+    document.getElementById("sidebar").classList.remove("open");
+  });
 });
 
-$("profileName").value=db.profile;
-$("profileName").onchange=e=>{
- db.profile=e.target.value.trim()||"My Money Diary";
- save();
-};
-
-$("monthFilter").value=currentMonth();
-$("monthFilter").onchange=render;
-$("expenseFilter").onchange=render;
-
-function openModal(type,index=null){
- currentType=type;
- editIndex=index;
-
- let title="",html="";
-
- if(type==="salary"){
-  title="💰 Add Salary";
-  html=`
-  <div class="field">
-   <label>Which month's salary?</label>
-   <input name="month" type="month" value="${currentMonth()}" required>
-  </div>
-  <div class="two">
-   <div class="field">
-    <label>Salary Amount (₹)</label>
-    <input name="amount" type="number" min="0.01" step="0.01" required placeholder="25000">
-   </div>
-   <div class="field">
-    <label>Received Date</label>
-    <input name="date" type="date" value="${today()}" required>
-   </div>
-  </div>
-  <div class="field">
-   <label>Payment Method</label>
-   <select name="method">
-    <option>Bank Transfer</option>
-    <option>UPI</option>
-    <option>Cash</option>
-    <option>Cheque</option>
-    <option>Other</option>
-   </select>
-  </div>
-  <div class="field">
-   <label>Company / Source</label>
-   <input name="source" placeholder="Optional">
-  </div>`;
- }
-
- if(type==="expense"){
-  title="🛍️ Add Expense";
-  html=`
-  <div class="field">
-   <label>Expense Name</label>
-   <input name="title" required placeholder="e.g. Groceries">
-  </div>
-  <div class="two">
-   <div class="field">
-    <label>Amount (₹)</label>
-    <input name="amount" type="number" min="0.01" step="0.01" required>
-   </div>
-   <div class="field">
-    <label>Expense Date</label>
-    <input name="date" type="date" value="${today()}" required>
-   </div>
-  </div>
-  <div class="field">
-   <label>Category</label>
-   <select name="category">
-    <option>Food</option>
-    <option>Shopping</option>
-    <option>Rent & Home</option>
-    <option>Travel</option>
-    <option>Bills</option>
-    <option>Health</option>
-    <option>Education</option>
-    <option>Entertainment</option>
-    <option>Family</option>
-    <option>Other</option>
-   </select>
-  </div>
-  <div class="field">
-   <label>Note (optional)</label>
-   <input name="note" placeholder="Add details">
-  </div>`;
- }
-
- if(type==="pending"){
-  title="⏳ Pending Salary";
-  html=`
-  <div class="field">
-   <label>Pending Salary Month</label>
-   <input name="month" type="month" value="${currentMonth()}" required>
-  </div>
-  <div class="field">
-   <label>Expected Amount (₹)</label>
-   <input name="amount" type="number" min="0" step="0.01">
-  </div>
-  <div class="field">
-   <label>Note</label>
-   <input name="note" placeholder="Expected payday">
-  </div>`;
- }
-
- if(type==="goal"){
-  title="🌷 New Savings Goal";
-  html=`
-  <div class="field">
-   <label>Goal Name</label>
-   <input name="title" required placeholder="Buy a laptop">
-  </div>
-  <div class="two">
-   <div class="field">
-    <label>Target Amount</label>
-    <input name="target" type="number" min="1" required>
-   </div>
-   <div class="field">
-    <label>Already Saved</label>
-    <input name="saved" type="number" min="0" value="0">
-   </div>
-  </div>
-  <div class="field">
-   <label>Target Date</label>
-   <input name="date" type="date">
-  </div>`;
- }
-
- $("modalTitle").textContent=title;
- $("formFields").innerHTML=html;
-
- if(index!==null){
-  let arr=type==="salary"?db.salary:
-   type==="expense"?db.expenses:
-   type==="pending"?db.pending:db.goals;
-
-  let item=arr[index];
-
-  Object.keys(item).forEach(k=>{
-   let field=$("recordForm").elements[k];
-   if(field)field.value=item[k];
-  });
- }
-
- $("modalBg").classList.add("show");
-}
-
-function closeModal(){
- $("modalBg").classList.remove("show");
- editIndex=null;
-}
-
-$("recordForm").onsubmit=e=>{
- e.preventDefault();
-
- let data=Object.fromEntries(
-  new FormData(e.target).entries()
- );
-
- ["amount","target","saved"].forEach(k=>{
-  if(data[k]!==undefined)data[k]=Number(data[k]);
- });
-
- let arr=currentType==="salary"?db.salary:
-  currentType==="expense"?db.expenses:
-  currentType==="pending"?db.pending:db.goals;
-
- if(currentType==="pending" && db.salary.some(x=>x.month===data.month)){
-  notify("This month's salary is already received");
-  return;
- }
-
- if(editIndex!==null){
-  arr[editIndex]={...arr[editIndex],...data};
- }else{
-  arr.unshift({id:Date.now(),...data});
- }
-
- save();
- closeModal();
- notify("Record saved successfully ✨");
-};
-
-function removeRecord(type,index){
- if(!confirm("Are you sure you want to delete this record?"))return;
-
- let arr=type==="salary"?db.salary:
-  type==="expense"?db.expenses:
-  type==="pending"?db.pending:db.goals;
-
- arr.splice(index,1);
- save();
- notify("Record deleted");
-}
-
-function editRecord(type,index){
- openModal(type,index);
-}
-
-function icon(category){
- const icons={
-  Food:"🍜",Shopping:"🛍️","Rent & Home":"🏡",
-  Travel:"🚌",Bills:"💡",Health:"💊",
-  Education:"📚",Entertainment:"🎬",
-  Family:"💗",Other:"🧾"
- };
- return icons[category]||"🧾";
-}
-
-function safe(s){
- return String(s??"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-
-function recordHTML(d,type,i){
- let salary=type==="salary";
- let pending=type==="pending";
- let title=salary||pending?monthName(d.month):d.title;
- let detail=salary?
-  "Received "+d.date+" · "+(d.method||""):
-  pending?"Awaiting payment":
-  (d.date||"")+" · "+(d.category||"");
-
- return `
- <div class="record">
-  <div class="record-icon">${salary?"💰":pending?"⏳":icon(d.category)}</div>
-  <div class="record-info">
-   <b>${safe(title)}</b>
-   <small>${safe(detail)}</small>
-  </div>
-  <span class="amount ${salary?"plus":pending?"":"minus"}">
-   ${pending?"Pending":(salary?"+":"−")+money(d.amount)}
-  </span>
-  <button onclick="editRecord('${type}',${i})">✎</button>
-  <button onclick="removeRecord('${type}',${i})">×</button>
- </div>`;
-}
-
-function render(){
- let m=$("monthFilter").value||currentMonth();
-
- let salaries=db.salary.filter(x=>x.month===m);
- let expenses=db.expenses.filter(x=>(x.date||"").startsWith(m));
-
- let income=total(salaries);
- let spent=total(expenses);
- let saved=income-spent;
-
- $("salaryTotal").textContent=money(income);
- $("expenseTotal").textContent=money(spent);
- $("savingTotal").textContent=money(saved);
- $("balanceTotal").textContent=money(saved);
- $("heroSaving").textContent=money(saved)+" saved";
-
- // Recent activity
- let activity=[
-  ...db.salary.map(x=>({...x,type:"salary"})),
-  ...db.expenses.map(x=>({...x,type:"expense"}))
- ].sort((a,b)=>(b.date||"").localeCompare(a.date||""));
-
- $("recent").innerHTML=activity.slice(0,5).map(x=>`
-  <div class="record">
-   <div class="record-icon">${x.type==="salary"?"💰":icon(x.category)}</div>
-   <div class="record-info">
-    <b>${safe(x.type==="salary"?"Salary · "+monthName(x.month):x.title)}</b>
-    <small>${safe(x.date)}</small>
-   </div>
-   <span class="amount ${x.type==="salary"?"plus":"minus"}">
-    ${x.type==="salary"?"+":"−"}${money(x.amount)}
-   </span>
-  </div>
- `).join("")||'<div class="empty">Your activity will appear here 🌱</div>';
-
- // Salary
- $("salaryRecords").innerHTML=db.salary.map((x,i)=>recordHTML(x,"salary",i)).join("")||
- '<div class="empty">No salary records yet.</div>';
-
- $("pendingRecords").innerHTML=db.pending.map((x,i)=>recordHTML(x,"pending",i)).join("")||
- '<div class="empty">No pending salary months 🎉</div>';
-
- // Expenses
- let filter=$("expenseFilter").value;
- let expenseList=db.expenses.map((x,i)=>({...x,index:i})).filter(x=>
-  filter!=="month"||(x.date||"").startsWith(currentMonth())
- );
-
- $("expenseRecords").innerHTML=expenseList.map(x=>
-  recordHTML(x,"expense",x.index)
- ).join("")||'<div class="empty">No expenses recorded 🌼</div>';
-
- // Savings
- let allSaved=total(db.salary)-total(db.expenses);
- $("monthSaved").textContent=money(saved);
- $("allSaved").textContent=money(allSaved);
-
- $("goalsList").innerHTML=db.goals.map((g,i)=>{
-  let pct=Math.min(100,g.target?g.saved/g.target*100:0);
-  return `
-  <div class="goal">
-   <b>🌷 ${safe(g.title)}</b>
-   <span style="float:right">${Math.round(pct)}%</span>
-   <div class="progress"><span style="width:${pct}%"></span></div>
-   <small>${money(g.saved)} saved of ${money(g.target)}</small>
-   <div style="text-align:right;margin-top:10px">
-    <button class="btn light" onclick="editRecord('goal',${i})">Edit</button>
-    <button class="btn danger" onclick="removeRecord('goal',${i})">Delete</button>
-   </div>
-  </div>`;
- }).join("")||'<div class="empty">Add your first savings goal ✨</div>';
-
- // Reports
- $("rIncome").textContent=money(total(db.salary));
- $("rExpense").textContent=money(total(db.expenses));
- $("rSaving").textContent=money(allSaved);
- $("rCount").textContent=db.salary.length;
-
- let months=[...new Set([
-  ...db.salary.map(x=>x.month),
-  ...db.expenses.map(x=>(x.date||"").slice(0,7))
- ].filter(Boolean))].sort().reverse();
-
- $("reportRows").innerHTML=months.map(mm=>{
-  let a=total(db.salary.filter(x=>x.month===mm));
-  let b=total(db.expenses.filter(x=>(x.date||"").startsWith(mm)));
-  return `<div class="record">
-   <div class="record-icon">🗓️</div>
-   <div class="record-info">
-    <b>${monthName(mm)}</b>
-    <small>Income ${money(a)} · Spent ${money(b)}</small>
-   </div>
-   <b class="amount plus">${money(a-b)}</b>
-  </div>`;
- }).join("")||'<div class="empty">Monthly reports appear here.</div>';
-
- renderChart();
- renderDonut(expenses,spent);
-}
-
-function renderChart(){
- let months=[];
- let now=new Date();
-
- for(let i=5;i>=0;i--){
-  let d=new Date(now.getFullYear(),now.getMonth()-i,1);
-  months.push(d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0"));
- }
-
- let vals=months.map(m=>({
-  month:m,
-  income:total(db.salary.filter(x=>x.month===m)),
-  expense:total(db.expenses.filter(x=>(x.date||"").startsWith(m)))
- }));
-
- let max=Math.max(1,...vals.flatMap(x=>[x.income,x.expense]));
-
- $("chart").innerHTML=vals.map(x=>`
-  <div class="bar-group">
-   <div class="bar" style="height:${Math.max(2,x.income/max*90)}%"></div>
-   <div class="bar exp" style="height:${Math.max(2,x.expense/max*90)}%"></div>
-   <small>${new Date(x.month+"-02").toLocaleDateString("en",{month:"short"})}</small>
-  </div>
- `).join("");
-}
-
-function renderDonut(expenses,spent){
- let colors=["#65ae87","#f4b58f","#d7a8c0","#e9d37d","#9cb7d5","#b6c8b2"];
- let cats={};
-
- expenses.forEach(x=>{
-  cats[x.category]=(cats[x.category]||0)+Number(x.amount);
- });
-
- let entries=Object.entries(cats).sort((a,b)=>b[1]-a[1]);
- let start=0;
-
- let gradient=entries.map((x,i)=>{
-  let end=start+(spent?x[1]/spent*100:0);
-  let part=`${colors[i%colors.length]} ${start}% ${end}%`;
-  start=end;
-  return part;
- });
-
- $("donut").style.background=spent?
-  `conic-gradient(${gradient.join(",")})`:"#e5f3eb";
-
- $("donutAmount").textContent=money(spent);
-
- $("legend").innerHTML=entries.slice(0,6).map((x,i)=>`
-  <span>
-   <span><i class="dot" style="background:${colors[i%colors.length]}"></i>${safe(x[0])}</span>
-   <b>${money(x[1])}</b>
-  </span>
- `).join("")||"No expenses yet";
-}
-
-// EXPORT CSV
-function exportCSV(){
- let rows=[
-  ["Type","Month","Description","Amount","Date","Category"],
-  ...db.salary.map(x=>["Salary",x.month,"Salary",x.amount,x.date,x.method]),
-  ...db.expenses.map(x=>["Expense",(x.date||"").slice(0,7),x.title,x.amount,x.date,x.category])
- ];
-
- let csv=rows.map(row=>row.map(v=>
-  '"'+String(v??"").replace(/"/g,'""')+'"'
- ).join(",")).join("\n");
-
- download("PennyBloom-Records.csv",csv,"text/csv");
-}
-
-function exportBackup(){
- download("PennyBloom-Backup.json",JSON.stringify(db,null,2),"application/json");
-}
-
-function download(name,data,type){
- let a=document.createElement("a");
- let url=URL.createObjectURL(new Blob([data],{type}));
- a.href=url;
- a.download=name;
- a.click();
- URL.revokeObjectURL(url);
-}
-
-function importBackup(e){
- let file=e.target.files[0];
- if(!file)return;
-
- let reader=new FileReader();
-
- reader.onload=()=>{
-  try{
-   let data=JSON.parse(reader.result);
-   if(!Array.isArray(data.salary)||!Array.isArray(data.expenses))throw 0;
-
-   db={...fresh(),...data};
-   save();
-   $("profileName").value=db.profile;
-   notify("Backup restored successfully!");
-  }catch(err){
-   alert("Invalid backup file");
+document.getElementById("menuBtn").addEventListener("click",()=>{
+  document.getElementById("sidebar").classList.toggle("open");
+});
+
+globalMonth.addEventListener("change",()=>{
+  if(!globalMonth.value)return;
+  selectedMonth=globalMonth.value;
+  updateDashboard();
+});
+
+// Salary form
+document.getElementById("salaryForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const month=document.getElementById("salaryMonth").value;
+  const amount=Number(document.getElementById("salaryAmount").value);
+  if(!month||amount<=0)return alert("Please enter a valid salary.");
+
+  const record={
+    id:crypto.randomUUID(),
+    month,
+    amount,
+    date:document.getElementById("salaryDate").value,
+    method:document.getElementById("salaryMethod").value,
+    source:document.getElementById("salarySource").value.trim()
+  };
+
+  const index=db.salary.findIndex(x=>x.month===month);
+  if(index>=0){
+    if(!confirm("Salary already exists for this month. Update it?"))return;
+    record.id=db.salary[index].id;
+    db.salary[index]=record;
+  }else{
+    db.salary.push(record);
   }
- };
 
- reader.readAsText(file);
- e.target.value="";
+  saveDB();
+  selectedMonth=month;
+  globalMonth.value=month;
+  e.target.reset();
+  document.getElementById("salaryMonth").value=month;
+  document.getElementById("salaryDate").value=today();
+  updateDashboard();
+  alert("Salary record saved successfully!");
+});
+
+// Expense form
+document.getElementById("expenseForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const amount=Number(document.getElementById("expenseAmount").value);
+  const month=document.getElementById("expenseMonth").value;
+  if(amount<=0||!month)return alert("Please enter valid details.");
+
+  db.expenses.push({
+    id:crypto.randomUUID(),
+    title:document.getElementById("expenseTitle").value.trim(),
+    amount,
+    date:document.getElementById("expenseDate").value,
+    month,
+    category:document.getElementById("expenseCategory").value,
+    method:document.getElementById("expenseMethod").value,
+    note:document.getElementById("expenseNote").value.trim()
+  });
+
+  saveDB();
+  selectedMonth=month;
+  globalMonth.value=month;
+  e.target.reset();
+  document.getElementById("expenseMonth").value=month;
+  document.getElementById("expenseDate").value=today();
+  updateDashboard();
+  alert("Expense added successfully!");
+});
+
+// Savings form
+document.getElementById("savingForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const amount=Number(document.getElementById("savingAmount").value);
+  const month=document.getElementById("savingMonth").value;
+  if(amount<=0||!month)return alert("Please enter valid details.");
+
+  db.savings.push({
+    id:crypto.randomUUID(),
+    title:document.getElementById("savingTitle").value.trim(),
+    amount,
+    date:document.getElementById("savingDate").value,
+    month,
+    category:document.getElementById("savingCategory").value,
+    note:document.getElementById("savingNote").value.trim()
+  });
+
+  saveDB();
+  selectedMonth=month;
+  globalMonth.value=month;
+  e.target.reset();
+  document.getElementById("savingMonth").value=month;
+  document.getElementById("savingDate").value=today();
+  updateDashboard();
+  alert("Savings added successfully!");
+});
+
+// Delete records
+function deleteRecord(type,id){
+  if(!confirm("Are you sure you want to delete this record?"))return;
+  db[type]=db[type].filter(x=>x.id!==id);
+  saveDB();
+  updateDashboard();
 }
 
-function clearData(){
- if(confirm("Delete ALL your salary, expense and savings records?")){
-  db={...fresh(),profile:db.profile};
-  save();
-  notify("All records cleared");
- }
+// Profile
+document.getElementById("profileName").value=db.profile||"";
+document.getElementById("saveProfile").addEventListener("click",()=>{
+  db.profile=document.getElementById("profileName").value.trim()||"My Money Diary";
+  saveDB();
+  alert("Diary name saved!");
+});
+
+// JSON backup
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+  downloadFile(blob,"pennybloom-backup.json");
+});
+
+function downloadFile(blob,name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=name;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
-render();
+// CSV export
+document.getElementById("exportCsv").addEventListener("click",()=>{
+  const rows=[["Type","Date","Month","Title","Category","Amount"]];
+  db.salary.forEach(x=>rows.push(["Salary",x.date,x.month,"Monthly Salary",x.method,x.amount]));
+  db.expenses.forEach(x=>rows.push(["Expense",x.date,x.month,x.title,x.category,x.amount]));
+  db.savings.forEach(x=>rows.push(["Saving",x.date,x.month,x.title,x.category,x.amount]));
+
+  const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\n");
+  downloadFile(new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"}),"pennybloom-records.csv");
+});
+
+// Restore JSON backup
+document.getElementById("importFile").addEventListener("change",async e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  try{
+    const imported=JSON.parse(await file.text());
+    if(!Array.isArray(imported.salary)||!Array.isArray(imported.expenses)||!Array.isArray(imported.savings)){
+      throw new Error("Invalid backup");
+    }
+    if(!confirm("Restore backup? Current records will be replaced."))return;
+    db={
+      profile:imported.profile||"My Money Diary",
+      salary:imported.salary,
+      expenses:imported.expenses,
+      savings:imported.savings
+    };
+    db.expenses.forEach(x=>{if(!x.month&&x.date)x.month=x.date.slice(0,7)});
+    db.savings.forEach(x=>{if(!x.month&&x.date)x.month=x.date.slice(0,7)});
+    saveDB();
+    document.getElementById("profileName").value=db.profile;
+    updateDashboard();
+    alert("Backup restored successfully!");
+  }catch(err){
+    alert("Invalid backup file. Please select a PennyBloom JSON backup.");
+  }
+  e.target.value="";
+});
+
+// Delete all data
+document.getElementById("clearBtn").addEventListener("click",()=>{
+  if(!confirm("Delete ALL salary, expense and savings records? This cannot be undone."))return;
+  if(!confirm("Final confirmation: permanently delete your data?"))return;
+  db=fresh();
+  saveDB();
+  document.getElementById("profileName").value=db.profile;
+  updateDashboard();
+  alert("All records have been deleted.");
+});
+
+// Initialize default dates and months
+function initialize(){
+  document.getElementById("todayText").textContent=
+    "Welcome to your personal money diary 🌿";
+  ["salaryDate","expenseDate","savingDate"].forEach(id=>{
+    document.getElementById(id).value=today();
+  });
+  ["salaryMonth","expenseMonth","savingMonth"].forEach(id=>{
+    document.getElementById(id).value=selectedMonth;
+  });
+  updateDashboard();
+}
+initialize();
 </script>
 </body>
 </html>
